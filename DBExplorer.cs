@@ -4,6 +4,9 @@ using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Common;
 using ColorfulConsole = Colorful.Console;
+using SharpCompress.Archives.Rar;
+using SharpCompress.Common;
+
 
 namespace DBExplorer
 {
@@ -91,10 +94,6 @@ namespace DBExplorer
                                 DataVortex.keywords.UrlChecker.Keywords.List[keyword],
                                 archiveName // Utilisez le nom de l'archive
                             ).Wait();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Rien n'a été trouvé parmi toutes les keywords");
                         }
                     }
                 }

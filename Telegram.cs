@@ -61,7 +61,7 @@ public class Telegram
                                     {
                                         var fileExtension = document.mime_type.Split('/')[1].ToLower(); // Obtenir l'extension en minuscules
 
-                                        if (fileExtension == "zip" || fileExtension == "rar")
+                                        if (fileExtension == "zip" || fileExtension == "vnd.rar")
                                         {
                                             var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
                                             var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
@@ -87,7 +87,7 @@ public class Telegram
                                                     await client.DownloadFileAsync(fileLocation, outputStream);
                                                 }
 
-                                                // Appelez DBExplorer pour traiter le fichier après 3 secondes pour éviter System.IO.IOException
+                                                // Appelez DBExplorer pour traiter le fichier et attendre 3 secondes pour éviter System.IO.IOException
                                                 await Task.Delay(3000);
                                                 DBExplorer.DBExplorer.Run(downloadPath);
                                             }
