@@ -4,8 +4,6 @@ using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Common;
 using ColorfulConsole = Colorful.Console;
-using SharpCompress.Archives.Rar;
-using SharpCompress.Common;
 
 
 namespace DBExplorer
@@ -61,6 +59,12 @@ namespace DBExplorer
                     Console.WriteLine($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
                     Console.ResetColor();
                 }
+                catch (System.OverflowException ex)
+                {
+                    // Handle the exception
+                    Console.WriteLine("Une exception de dépassement de capacité s'est produite : " + ex.Message);
+                    // You can add further error handling or logging here if needed
+                }
 
                 var results = FindPasswords();
 
@@ -104,6 +108,7 @@ namespace DBExplorer
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Fin de l'archive {archiveName}.");
                 Console.ResetColor();
+                DBExplorer.Run(downloadPath); // relance au cas ou des exeptions ont surgis pendant le téléchargement.
             }
             
 

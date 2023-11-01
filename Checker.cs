@@ -89,6 +89,18 @@ namespace DataVortex
                                 sw.WriteLine($"{username}:{password}");
                         }
                     }
+                    if (jsonResponse.ContainsKey("code") && jsonResponse["code"].ToString() == "EMAIL_NOT_VALIDATED")
+                    {
+                        // Ajoutez le compte à la liste des incorrect
+                        using (StreamWriter sw = new StreamWriter("incorrect.txt", true))
+                        {
+                            sw.WriteLine($"{username}:{password}");
+                            Console.WriteLine("L'email n'a pas été validé. Ajout dans la liste incorrect.");
+                        }
+
+                        // Vous pouvez également gérer d'autres informations spécifiques à "EMAIL_NOT_VALIDATED" ici
+                    }
+
 
                     if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
                     {
