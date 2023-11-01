@@ -65,6 +65,12 @@ namespace DBExplorer
                     Console.WriteLine("Une exception de dépassement de capacité s'est produite : " + ex.Message);
                     // You can add further error handling or logging here if needed
                 }
+                catch (SharpCompress.Common.CryptographicException ex)
+                {
+                    // Handle the exception
+                    Console.WriteLine("Problème concernant l'archive : " + ex.Message);
+                    // You can add further error handling or logging here if needed
+                }
 
                 var results = FindPasswords();
 
