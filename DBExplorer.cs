@@ -108,7 +108,7 @@ namespace DBExplorer
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Fin de l'archive {archiveName}.");
                 Console.ResetColor();
-                DBExplorer.Run(downloadPath); // relance au cas ou des exeptions ont surgis pendant le téléchargement.
+           
             }
             
 
@@ -130,6 +130,7 @@ namespace DBExplorer
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Contenu de dbdtemp supprimé avec succès.");
                 Console.ResetColor();
+                DBExplorer.Run(downloadPath); // relance au cas ou des exeptions ont surgis pendant le téléchargement.
             }
         }
 
