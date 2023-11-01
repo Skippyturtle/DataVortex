@@ -92,6 +92,10 @@ namespace DBExplorer
                                 archiveName // Utilisez le nom de l'archive
                             ).Wait();
                         }
+                        else
+                        {
+                            Console.WriteLine("Rien n'a été trouvé parmi toutes les keywords");
+                        }
                     }
                 }
 

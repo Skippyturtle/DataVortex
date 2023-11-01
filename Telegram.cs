@@ -59,41 +59,49 @@ public class Telegram
                                     var document = documentMedia.document as Document;
                                     if (document != null)
                                     {
-                                        var fileExtension = document.mime_type.Split('/')[1];
-                                        Console.WriteLine($"Extension du fichier : {fileExtension}");
+                                        var fileExtension = document.mime_type.Split('/')[1].ToLower(); // Obtenir l'extension en minuscules
 
-                                        // Récupérez le nom du fichier à partir des attributs du document
-                                        var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
-                                        var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
-
-                                        // Vérifiez si le nom de l'archive a déjà été traité
-                                        if (!IsArchiveProcessed(downloadPath, fileName))
+                                        if (fileExtension == "zip" || fileExtension == "rar")
                                         {
-                                            // Créez un objet InputDocumentFileLocation
-                                            var fileLocation = new InputDocumentFileLocation
-                                            {
-                                                id = document.id,
-                                                access_hash = document.access_hash,
-                                                file_reference = document.file_reference,
-                                                thumb_size = "" // laissez vide pour télécharger le fichier complet
-                                            };
+                                            var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
+                                            var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
 
-                                            // Définissez le chemin du fichier local où le fichier sera téléchargé
-                                            var localFilePath = Path.Combine(downloadPath, fileName);
-
-                                            // Téléchargez le fichier
-                                            using (var outputStream = System.IO.File.OpenWrite(localFilePath))
+                                            // Vérifiez si le nom de l'archive a déjà été traité
+                                            if (!IsArchiveProcessed(downloadPath, fileName))
                                             {
-                                                await client.DownloadFileAsync(fileLocation, outputStream);
+                                                // Créez un objet InputDocumentFileLocation
+                                                var fileLocation = new InputDocumentFileLocation
+                                                {
+                                                    id = document.id,
+                                                    access_hash = document.access_hash,
+                                                    file_reference = document.file_reference,
+                                                    thumb_size = "" // laissez vide pour télécharger le fichier complet
+                                                };
+
+                                                // Définissez le chemin du fichier local où le fichier sera téléchargé
+                                                var localFilePath = Path.Combine(downloadPath, fileName);
+
+                                                // Téléchargez le fichier
+                                                using (var outputStream = System.IO.File.OpenWrite(localFilePath))
+                                                {
+                                                    await client.DownloadFileAsync(fileLocation, outputStream);
+                                                }
+
+                                                // Appelez DBExplorer pour traiter le fichier après 3 secondes pour éviter System.IO.IOException
+                                                await Task.Delay(3000);
+                                                DBExplorer.DBExplorer.Run(downloadPath);
                                             }
-
-                                            // Appelez DBExplorer pour traiter le fichier
-                                            DBExplorer.DBExplorer.Run(downloadPath);
+                                            else
+                                            {
+                                                Console.ForegroundColor = ConsoleColor.Red;
+                                                Console.WriteLine("Cette archive a déjà été téléchargée et ne sera pas re-téléchargée.");
+                                                Console.ResetColor();
+                                            }
                                         }
                                         else
                                         {
                                             Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.WriteLine("Cette archive a déjà été téléchargé et ne sera pas re téléchargée.");
+                                            Console.WriteLine("Le fichier n'est pas un .zip ou .rar et ne sera pas téléchargé.");
                                             Console.ResetColor();
                                         }
                                     }

