@@ -43,6 +43,20 @@ namespace DBExplorer
 
                 startTime = DateTime.Now; // Save the start time before extraction
 
+                string directoryPath = @"dbdtemp";
+
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    // If it doesn't exist, create it
+                    Directory.CreateDirectory(directoryPath);
+                    Console.WriteLine("Création de dbdtemp.");
+                }
+                else
+                {
+
+                }
+
                 try
                 {
                     ExtractArchive(archivePath, "dbdtemp");
