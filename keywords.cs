@@ -233,7 +233,7 @@ namespace DataVortex
                                 if (ReportedAccounts.Contains(resultString))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Magenta;
-                                    Console.WriteLine($"Le compte {resultString} a déjà été signalé. Ignoré.");
+                                    Console.WriteLine($"Le compte {resultString} a déjà été envoyé. Ignoré.");
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }

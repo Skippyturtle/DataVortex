@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Ionic.Zip;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
@@ -45,7 +42,22 @@ namespace DBExplorer
 
                 startTime = DateTime.Now; // Save the start time before extraction
 
-                ExtractArchive(archivePath, "dbdtemp");
+                try
+                {
+                    ExtractArchive(archivePath, "dbdtemp");
+                }
+                catch (FormatException ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
+                    Console.ResetColor();
+                }
+                catch (InvalidFormatException ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
+                    Console.ResetColor();
+                }
 
                 var results = FindPasswords();
 
@@ -85,10 +97,12 @@ namespace DBExplorer
 
                 processedArchives.Add(archiveName); // Ajoutez le nom de l'archive à la liste
                 File.Delete(archivePath); // Supprimez le fichier d'archive actuellement traité
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Fin de l'archive {archiveName}.");
+                Console.ResetColor();
             }
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Fin de l'archive");
-            Console.ResetColor();
+            
 
             File.WriteAllLines("processed_archives.txt", processedArchives);
 
