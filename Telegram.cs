@@ -55,42 +55,32 @@ public class Telegram
                                     {
                                         var fileExtension = document.mime_type.Split('/')[1].ToLower(); // Obtenir l'extension en minuscules
 
-                                        if (fileExtension == "zip" || fileExtension == "vnd.rar")
+                                        if (fileExtension == "zip" || fileExtension == "rar")
                                         {
                                             var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
                                             var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
 
-                                            // Vérifiez si le nom de l'archive a déjà été traité
-                                            if (!IsArchiveProcessed(downloadPath, fileName))
+                                            // Créez un objet InputDocumentFileLocation
+                                            var fileLocation = new InputDocumentFileLocation
                                             {
-                                                // Créez un objet InputDocumentFileLocation
-                                                var fileLocation = new InputDocumentFileLocation
-                                                {
-                                                    id = document.id,
-                                                    access_hash = document.access_hash,
-                                                    file_reference = document.file_reference,
-                                                    thumb_size = "" // laissez vide pour télécharger le fichier complet
-                                                };
+                                                id = document.id,
+                                                access_hash = document.access_hash,
+                                                file_reference = document.file_reference,
+                                                thumb_size = "" // laissez vide pour télécharger le fichier complet
+                                            };
 
-                                                // Définissez le chemin du fichier local où le fichier sera téléchargé
-                                                var localFilePath = Path.Combine(downloadPath, fileName);
+                                            // Définissez le chemin du fichier local où le fichier sera téléchargé
+                                            var localFilePath = Path.Combine(downloadPath, fileName);
 
-                                                // Téléchargez le fichier
-                                                using (var outputStream = System.IO.File.OpenWrite(localFilePath))
-                                                {
-                                                    await client.DownloadFileAsync(fileLocation, outputStream);
-                                                }
-
-                                                // Appelez DBExplorer pour traiter le fichier et attendre 3 secondes pour éviter System.IO.IOException
-                                                await Task.Delay(3000);
-                                                DBExplorer.DBExplorer.Run(downloadPath);
-                                            }
-                                            else
+                                            // Téléchargez le fichier
+                                            using (var outputStream = System.IO.File.OpenWrite(localFilePath))
                                             {
-                                                Console.ForegroundColor = ConsoleColor.Red;
-                                                Console.WriteLine("Cette archive a déjà été téléchargée et ne sera pas re-téléchargée.");
-                                                Console.ResetColor();
+                                                await client.DownloadFileAsync(fileLocation, outputStream);
                                             }
+
+                                            // Appelez DBExplorer pour traiter le fichier et attendre 3 secondes pour éviter System.IO.IOException
+                                            await Task.Delay(3000);
+                                            DBExplorer.DBExplorer.Run(downloadPath);
                                         }
                                         else
                                         {
@@ -123,13 +113,6 @@ public class Telegram
             if (client != null)
                 client.Dispose();
         }
-    }
-
-    // Fonction pour vérifier si le nom de l'archive a déjà été traité
-    private static bool IsArchiveProcessed(string downloadPath, string archiveName)
-    {
-        List<string> processedArchives = DBExplorer.DBExplorer.LoadProcessedArchives();
-        return processedArchives.Contains(archiveName);
     }
 
     static string Config(string what)

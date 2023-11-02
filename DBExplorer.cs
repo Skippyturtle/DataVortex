@@ -5,7 +5,6 @@ using SharpCompress.Archives.Rar;
 using SharpCompress.Common;
 using ColorfulConsole = Colorful.Console;
 
-
 namespace DBExplorer
 {
     public static class DBExplorer
@@ -31,12 +30,6 @@ namespace DBExplorer
             foreach (string archivePath in archives)
             {
                 string archiveName = Path.GetFileName(archivePath); // Obtenez le nom de l'archive
-                if (processedArchives.Contains(archiveName))
-                {
-                    System.Console.WriteLine($"Archive déjà traitée: {archiveName}");
-                    File.Delete(archivePath);
-                    continue;
-                }
                 Console.ForegroundColor = ConsoleColor.Red;
                 System.Console.WriteLine($"Archive détectée: {archiveName}");
                 Console.ResetColor();
@@ -45,16 +38,11 @@ namespace DBExplorer
 
                 string directoryPath = @"dbdtemp";
 
-
                 if (!Directory.Exists(directoryPath))
                 {
                     // If it doesn't exist, create it
                     Directory.CreateDirectory(directoryPath);
                     Console.WriteLine("Création de dbdtemp.");
-                }
-                else
-                {
-
                 }
 
                 try
@@ -128,11 +116,7 @@ namespace DBExplorer
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Fin de l'archive {archiveName}.");
                 Console.ResetColor();
-           
             }
-            
-
-            File.WriteAllLines("processed_archives.txt", processedArchives);
 
             // Supprimer le contenu du répertoire dbdtemp
             if (Directory.Exists("dbdtemp"))
@@ -150,7 +134,7 @@ namespace DBExplorer
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Contenu de dbdtemp supprimé avec succès.");
                 Console.ResetColor();
-                DBExplorer.Run(downloadPath); // relance au cas ou des exeptions ont surgis pendant le téléchargement.
+                DBExplorer.Run(downloadPath); // relance au cas où des exceptions ont surgi pendant le téléchargement.
             }
         }
 
@@ -167,7 +151,7 @@ namespace DBExplorer
                 {
                     foreach (var entry in archive.Entries)
                     {
-                        if (!entry.IsDirectory && (entry.Key.EndsWith("Passwords.txt") || entry.Key.EndsWith("ALL Passwords.txt")))
+                        if (!entry.IsDirectory && (entry.Key.EndsWith("Passwords.txt") || entry.Key.EndsWith("All Passwords.txt")))
                         {
                             string relativePath = entry.Key;
                             string outputPath = Path.GetFullPath(Path.Combine(output_path, relativePath));
