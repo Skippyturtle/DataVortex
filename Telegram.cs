@@ -55,7 +55,7 @@ public class Telegram
                                     {
                                         var fileExtension = document.mime_type.Split('/')[1].ToLower(); // Obtenir l'extension en minuscules
 
-                                        if (fileExtension == "zip" || fileExtension == "rar")
+                                        if (fileExtension == "zip" || fileExtension == "vnd.rar")
                                         {
                                             var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
                                             var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
