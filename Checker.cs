@@ -8,6 +8,8 @@ namespace DataVortex
     {
         public static double Remaining1 { get; private set; }
         public static string BirthDate { get; private set; }
+        
+        public static string AccessToken { get; private set; }
 
         private static HashSet<string> foundAccounts = new HashSet<string>();
         private static Dictionary<string, bool> accountVerificationStatus = new Dictionary<string, bool>();
@@ -171,7 +173,8 @@ namespace DataVortex
                                     Username = username,
                                     Password = password,
                                     BirthDate = BirthDate,
-                                    Remaining1 = Remaining1
+                                    Remaining1 = Remaining1,
+                                    AccessToken = accessToken
                                 };
 
                                 // Serialize the JSON object to a string
