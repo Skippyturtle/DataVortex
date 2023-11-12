@@ -17,6 +17,8 @@ namespace DBExplorer
             string folderPath = downloadPath;
             string[] archives = Directory.GetFiles(folderPath, "*.rar")
                                            .Concat(Directory.GetFiles(folderPath, "*.zip"))
+                                           .Concat(Directory.GetFiles(folderPath, "*.RAR"))
+                                           .Concat(Directory.GetFiles(folderPath, "*.ZIP"))
                                            .ToArray();
 
             if (archives.Length == 0)
@@ -72,6 +74,10 @@ namespace DBExplorer
                     // Handle the exception
                     Console.WriteLine("Problème concernant l'archive : " + ex.Message);
                     // You can add further error handling or logging here if needed
+                } 
+                catch (System.IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine("Problème concernant l'archive : " + ex.Message);
                 }
 
                 var results = FindPasswords();
