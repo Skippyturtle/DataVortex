@@ -212,9 +212,9 @@ namespace DataVortex
                     else if (errorResponse.StatusCode == (HttpStatusCode)429)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Erreur 429 : Rate limit atteint. Prochaine tentative dans 2 minute.");
+                        Console.WriteLine("Erreur 429 : Rate limit atteint. Prochaine tentative dans 5 minute.");
                         Console.ResetColor();
-                        Thread.Sleep(240000); // Attendez 4 minute (120 000 millisecondes) avant de réessayer.
+                        Thread.Sleep(300000); // Attendez 5 minute (300000 millisecondes) avant de réessayer.
                         await CheckPassCultureAsync(username, password); // Réessayez après l'attente.
                     }
                 }
