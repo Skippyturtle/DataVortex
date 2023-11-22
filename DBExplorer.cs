@@ -79,6 +79,11 @@ namespace DBExplorer
                 {
                     Console.WriteLine("Problème concernant l'archive : " + ex.Message);
                 }
+                catch (System.InvalidOperationException ex)
+                {
+                    Console.WriteLine("Problème concernant l'archive : " + ex.Message);
+                }
+
 
                 var results = FindPasswords();
 
