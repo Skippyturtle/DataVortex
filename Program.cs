@@ -12,7 +12,6 @@ class Program
 
         // Lancez la tâche Telegram.TelegramDownload() ou DBExplorer.DBExplorer.Run()
         await Task.Run(() => Telegram.TelegramDownload(downloadPath));
-
         AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
         {
             GlobalExceptionHandler.HandleException((Exception)e.ExceptionObject);

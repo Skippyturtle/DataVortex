@@ -1,6 +1,9 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TwoCaptcha.Captcha;
+using TwoCaptcha.Examples;
+
 
 namespace DataVortex
 {
@@ -10,6 +13,8 @@ namespace DataVortex
         public static string BirthDate { get; private set; }
         
         public static string AccessToken { get; private set; }
+
+        public static string RecaptchaToken { get; private set; }
 
         private static HashSet<string> foundAccounts = new HashSet<string>();
         private static Dictionary<string, bool> accountVerificationStatus = new Dictionary<string, bool>();
@@ -53,13 +58,17 @@ namespace DataVortex
 
         public static async Task CheckPassCultureAsync(string username, string password)
         {
+            Console.Write("Captcha en cours");
+            Console.WriteLine(" ");
+            ReCaptchaV2Example.SolveCaptcha();
+            string captchaCode = ReCaptchaV2Example.CaptchaCode;
             var url = "https://backend.passculture.app/native/v1/signin";
 
             var httpRequest = (HttpWebRequest)WebRequest.Create(url);
             httpRequest.Method = "POST";
             httpRequest.ContentType = "application/json";
 
-            var data = "{\"identifier\":\"" + username + "\",\"password\":\"" + password + "\"}";
+            var data = "{\"identifier\":\"" + username + "\",\"password\":\"" + password + "\",\"token\":\"" + captchaCode + "\"}";
 
             try
             {
