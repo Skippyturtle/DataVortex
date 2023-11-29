@@ -157,8 +157,21 @@ namespace DataVortex
                                     Console.WriteLine($"birthDate: {BirthDate}");
                                     Console.ResetColor();
                                 }
+                            if (jsonResponse3["status"] != null && jsonResponse3["status"]["statusType"] != null)
+                            {
+                                string statusType = jsonResponse3["status"]["statusType"].ToString();
 
-                                if (jsonResponse3["domainsCredit"] != null)
+                                if (statusType.Equals("non_eligible", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    // Faire quelque chose si le statut est "non_eligible"
+                                    Console.WriteLine("L'utilisateur n'est pas éligible.");
+                                    MarkAccountAsVerified(username, password);
+                                }
+                            }
+
+
+
+                            if (jsonResponse3["domainsCredit"] != null)
                                 {
                                     var domainsCredit = jsonResponse3["domainsCredit"];
 
