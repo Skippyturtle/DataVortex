@@ -120,12 +120,15 @@ namespace DBExplorer
                     }
                 }
 
-                processedArchives.Add(archiveName); // Ajoutez le nom de l'archive à la liste
-                File.Delete(archivePath); // Supprimez le fichier d'archive actuellement traité
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Fin de l'archive {archiveName}.");
+                Console.WriteLine($"Fin de l'archive {archiveName}, suppression en cours...");
+                File.Delete(archivePath); // Supprimez le fichier d'archive actuellement traité;
                 Console.ResetColor();
+                while (File.Exists(archivePath))
+                {
+                    Thread.Sleep(100); // Attendez 100 millisecondes avant de vérifier à nouveau
+                }
             }
 
             // Supprimer le contenu du répertoire dbdtemp
@@ -195,14 +198,14 @@ namespace DBExplorer
             foreach (var file in files)
             {
                 var contents = File.ReadAllText(file);
-                var matches = Regex.Matches(contents, @"(URL|Host):\s*(.*?)\nUsername:\s*(.*?)\nPassword:\s*(.*?)\nApplication:\s*(.*?)\n=*");
+                var matches = Regex.Matches(contents, @"(?:URL|HOST):\s*(.*?)\n(?:Username|Login|User):\s*(.*?)\n(?:Password|Pass):\s*(.*?)\n=*");
 
                 foreach (Match match in matches)
                 {
-                    var urlOrHost = match.Groups[2].Value.Trim();
-                    var username = match.Groups[3].Value.Trim();
-                    var password = match.Groups[4].Value.Trim();
-                    var app = match.Groups[5].Value.Trim();
+                    var urlOrHost = match.Groups[1].Value.Trim();
+                    var username = match.Groups[2].Value.Trim();
+                    var password = match.Groups[3].Value.Trim();
+                    var app = "DBExplorer"; // On ne récupère plus l'application
 
                     foreach (var keyword in DataVortex.keywords.UrlChecker.Keywords.List.Keys)
                     {
@@ -224,6 +227,7 @@ namespace DBExplorer
 
             return results;
         }
+
 
         public static List<string> LoadProcessedArchives()
         {

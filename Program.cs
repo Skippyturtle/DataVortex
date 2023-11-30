@@ -20,16 +20,24 @@ class Program
 
     private static string GetDownloadPath()
     {
-        Console.Write("Entrez le chemin de téléchargement : ");
-        string downloadPath = Console.ReadLine();
+        string configFilePath = "config.json";
 
-        if (string.IsNullOrEmpty(downloadPath))
+        if (File.Exists(configFilePath))
         {
-            Console.WriteLine("Le chemin de téléchargement ne peut pas être vide. Utilisation du chemin par défaut.");
-            downloadPath = @"D:\Téléchargements\Telegram Desktop";
+            // Si le fichier existe, lisez le chemin depuis le fichier
+            return File.ReadAllText(configFilePath).Trim();
         }
+        else
+        {
+            Console.Write("Entrez le chemin de téléchargement : ");
+            string downloadPath = Console.ReadLine();
 
-        return downloadPath;
+
+            // Sauvegardez le chemin dans le fichier config.json
+            File.WriteAllText(configFilePath, downloadPath);
+
+            return downloadPath;
+        }
     }
 
     // Gestionnaire d'exceptions global

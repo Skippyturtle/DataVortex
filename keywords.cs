@@ -124,7 +124,6 @@ namespace DataVortex
                                     sb.AppendLine($"`{accountIdentifier}`");
                                     sb.AppendLine($"\n**Montant restant:**\n {accountDetail.Remaining1} €");
                                     sb.AppendLine($"\n**Date de naissance:**\n {accountDetail.BirthDate}");
-                                    sb.AppendLine($"\n**AccessToken:**\n {accountDetail.AccessToken}");
 
                                     // Ajoutez les détails au champ de l'embed
                                     embed.AddField("Identifiant :\n", sb.ToString());
