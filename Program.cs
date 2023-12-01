@@ -4,7 +4,6 @@ class Program
 {
     static async Task Main()
     {
-        WTelegram.Helpers.Log = delegate { }; // ne pas envoyer les logs de telegram, je met au debut comme ça ça enlève partout
         // Définissez un gestionnaire d'exceptions global
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
