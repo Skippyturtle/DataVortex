@@ -103,6 +103,18 @@ public class Telegram
                                             Console.ResetColor();
                                         }
                                     }
+                                    else
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine("Le fichier n'est pas un document et ne sera pas téléchargé.");
+                                        Console.ResetColor();
+                                    }
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("Le fichier n'est pas un document et ne sera pas téléchargé.");
+                                    Console.ResetColor();
                                 }
                             }
                         }
