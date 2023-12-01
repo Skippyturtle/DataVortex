@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Ionic.Zip;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
@@ -10,28 +11,16 @@ namespace DBExplorer
     public static class DBExplorer
     {
         private static DateTime startTime;
-
-        public static void Run(string downloadPath)
+        public static void Run(string localFilePath, string fileName)
         {
+            DataVortex.Checker.RemoveDuplicateLines("verified_accounts.json");
             PrintBanner();
-            string folderPath = downloadPath;
-            string[] archives = Directory.GetFiles(folderPath, "*.rar")
-                                           .Concat(Directory.GetFiles(folderPath, "*.zip"))
-                                           .Concat(Directory.GetFiles(folderPath, "*.RAR"))
-                                           .Concat(Directory.GetFiles(folderPath, "*.ZIP"))
-                                           .ToArray();
-
-            if (archives.Length == 0)
-            {
-                System.Console.WriteLine("Aucune archive détectée dans le dossier spécifié.");
-                return;
-            }
+            string[] archives = new string[] { localFilePath };
 
             foreach (string archivePath in archives)
             {
                 string archiveName = Path.GetFileName(archivePath); // Obtenez le nom de l'archive
                 Console.ForegroundColor = ConsoleColor.Red;
-                System.Console.WriteLine($"Archive détectée: {archiveName}");
                 Console.ResetColor();
 
                 startTime = DateTime.Now; // Save the start time before extraction
@@ -42,44 +31,44 @@ namespace DBExplorer
                 {
                     // If it doesn't exist, create it
                     Directory.CreateDirectory(directoryPath);
-                    Console.WriteLine("Création de dbdtemp.");
+                    Telegram.LogMessage("Création de dbdtemp.");
                 }
 
                 try
                 {
-                    ExtractArchive(archivePath, "dbdtemp");
+                    ExtractArchive(localFilePath, fileName, "dbdtemp");
                 }
                 catch (FormatException ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
+                    Telegram.LogMessage($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
                     Console.ResetColor();
                 }
                 catch (InvalidFormatException ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
+                    Telegram.LogMessage($"Erreur lors de l'extraction de l'archive {archiveName}: {ex.Message}");
                     Console.ResetColor();
                 }
                 catch (System.OverflowException ex)
                 {
                     // Handle the exception
-                    Console.WriteLine("Une exception de dépassement de capacité s'est produite : " + ex.Message);
+                    Telegram.LogMessage("Une exception de dépassement de capacité s'est produite : " + ex.Message);
                     // You can add further error handling or logging here if needed
                 }
                 catch (SharpCompress.Common.CryptographicException ex)
                 {
                     // Handle the exception
-                    Console.WriteLine("Problème concernant l'archive : " + ex.Message);
+                    Telegram.LogMessage("Problème concernant l'archive : " + ex.Message);
                     // You can add further error handling or logging here if needed
                 } 
                 catch (System.IndexOutOfRangeException ex)
                 {
-                    Console.WriteLine("Problème concernant l'archive : " + ex.Message);
+                    Telegram.LogMessage("Problème concernant l'archive : " + ex.Message);
                 }
                 catch (System.InvalidOperationException ex)
                 {
-                    Console.WriteLine("Problème concernant l'archive : " + ex.Message);
+                    Telegram.LogMessage("Problème concernant l'archive : " + ex.Message);
                 }
 
 
@@ -104,10 +93,10 @@ namespace DBExplorer
 
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Fin de l'archive {archiveName}, suppression en cours...");
-                File.Delete(archivePath); // Supprimez le fichier d'archive actuellement traité;
+                Telegram.LogMessage($"Fin de l'archive {fileName}, suppression en cours...");
+                File.Delete(localFilePath); // Supprimez le fichier d'archive actuellement traité;
                 Console.ResetColor();
-                while (File.Exists(archivePath))
+                while (File.Exists(localFilePath))
                 {
                     Thread.Sleep(100); // Attendez 100 millisecondes avant de vérifier à nouveau
                 }
@@ -127,19 +116,36 @@ namespace DBExplorer
                 }
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Contenu de dbdtemp supprimé avec succès.");
+                Telegram.LogMessage("Contenu de dbdtemp supprimé avec succès.");
                 Console.ResetColor();
-                DBExplorer.Run(downloadPath); // relance au cas où des exceptions ont surgi pendant le téléchargement.
+                Telegram.LogMessage("Effaçement de l'action sur archive d'ici 5 secondes.");
+                Thread.Sleep(5000);
+                Startconsole();
+
             }
         }
+       
+        public static void Startconsole()
+        {
+            Telegram.ClearConsole();
+            PrintBanner();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine();
+            Telegram.LogMessage("Prêt à télécharger la prochaine archive");
 
+    }
         private static void PrintBanner()
         {
             ColorfulConsole.WriteLine(Figgle.FiggleFonts.Standard.Render("DBExplorer"));
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("V1.8.3");
+            Console.ResetColor();
         }
 
-        private static void ExtractArchive(string filename, string output_path)
+        private static void ExtractArchive(string filename,string fileName, string output_path)
         {
+            Console.WriteLine();
+            Telegram.LogMessage($"Extration de {fileName} commencée");
             if (IsArchiveFile(filename))
             {
                 using (var archive = ArchiveFactory.Open(filename))
@@ -160,7 +166,8 @@ namespace DBExplorer
             }
             else
             {
-                ColorfulConsole.WriteLine("Erreur : format d'archive non pris en charge", System.Drawing.Color.Blue);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Telegram.LogMessage("Erreur : format d'archive non pris en charge");
                 Console.ResetColor();
                 File.Delete(filename);
             }

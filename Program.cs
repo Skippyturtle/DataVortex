@@ -4,7 +4,7 @@ class Program
 {
     static async Task Main()
     {
-        DataVortex.Checker.RemoveDuplicateLines("verified_accounts.json");
+        WTelegram.Helpers.Log = delegate { }; // ne pas envoyer les logs de telegram, je met au debut comme ça ça enlève partout
         // Définissez un gestionnaire d'exceptions global
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
@@ -30,7 +30,7 @@ class Program
         }
         else
         {
-            Console.Write("Entrez le chemin de téléchargement : ");
+            Telegram.LogMessage("Entrez le chemin de téléchargement : ");
             string downloadPath = Console.ReadLine();
 
 
@@ -54,7 +54,7 @@ class Program
             File.AppendAllText("errors.txt", errorText, Encoding.UTF8);
 
             // Affichez l'erreur dans la console (facultatif)
-            Console.WriteLine("Une erreur s'est produite. Veuillez consulter le fichier errors.txt pour plus de détails.");
+            Telegram.LogMessage("Une erreur s'est produite. Veuillez consulter le fichier errors.txt pour plus de détails.");
         }
     }
     public static class GlobalExceptionHandler

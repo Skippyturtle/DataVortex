@@ -39,7 +39,7 @@ namespace DataVortex
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erreur lors du chargement des comptes incorrects : " + ex.Message);
+                        Telegram.LogMessage("Erreur lors du chargement des comptes incorrects : " + ex.Message);
                     }
                 }
 
@@ -53,7 +53,7 @@ namespace DataVortex
                     foreach (var duplicate in duplicates)
                     {
                         Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.WriteLine($"Doublon détecté pour le webhook : {duplicate}");
+                        Telegram.LogMessage($"Doublon détecté pour le webhook : {duplicate}");
                         Console.ResetColor();
                     }
                 }
@@ -90,7 +90,7 @@ namespace DataVortex
                                 if (ReportedAccounts.Contains(accountIdentifier))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Magenta;
-                                    Console.WriteLine($"Le compte {accountIdentifier} a déjà été envoyé. Ignoré.");
+                                    Telegram.LogMessage($"Le compte {accountIdentifier} a déjà été envoyé. Ignoré.");
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }
@@ -98,7 +98,7 @@ namespace DataVortex
                                 if (incorrectAccounts.Contains(accountIdentifier))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Magenta;
-                                    Console.WriteLine($"Le compte {accountIdentifier} est dans la liste incorrect. Ignoré.");
+                                    Telegram.LogMessage($"Le compte {accountIdentifier} est dans la liste incorrect. Ignoré.");
                                     Console.ResetColor();
                                     continue; // Passe au compte suivant
                                 }
@@ -130,7 +130,7 @@ namespace DataVortex
 
                                     // Envoyez le message via le webhook
                                     await client.SendMessageAsync(embeds: new[] { embed.Build() });
-                                    Console.WriteLine("Embed Passculture envoyé");
+                                    Telegram.LogMessage("Embed Passculture envoyé");
                                 }
                             }
                         }
@@ -165,13 +165,13 @@ namespace DataVortex
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erreur lors de la recherche des détails du compte : " + ex.Message);
+                        Telegram.LogMessage("Erreur lors de la recherche des détails du compte : " + ex.Message);
                     }
 
                     // Si les détails ne sont pas trouvés, définissez detailsFound sur false
                     if (!detailsFound)
                     {
-                        Console.WriteLine("Informations non trouvées");
+                        Telegram.LogMessage("Informations non trouvées");
                     }
 
                     return string.Empty;
