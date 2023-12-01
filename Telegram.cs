@@ -74,6 +74,7 @@ public class Telegram
 
                                             var localFilePath = downloadPath + fileName;
                                             Console.WriteLine();
+                                            Console.SetCursorPosition(0, 1);
                                             Console.Write("Fichier compatible : ");
                                             Console.ForegroundColor = ConsoleColor.Blue;
                                             Console.Write(fileName);

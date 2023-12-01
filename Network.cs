@@ -70,7 +70,7 @@ namespace DataVortex
             int progressBarLength = 20; // Set the desired length for the progress bar
             int progressChars = (int)(percentageDownloaded / 100 * progressBarLength);
 
-            Console.SetCursorPosition(0,3);
+            Console.SetCursorPosition(0,2);
 
             if (estimatedTimeRemaining < 60)
             {
