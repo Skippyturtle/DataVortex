@@ -4,6 +4,7 @@ class Program
 {
     static async Task Main()
     {
+        DataVortex.Checker.RemoveDuplicateLines("verified_accounts.json");
         // Définissez un gestionnaire d'exceptions global
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 

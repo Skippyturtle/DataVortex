@@ -19,7 +19,7 @@
           "Newtonsoft.Json": "13.0.3",
           "SharpCompress": "0.34.1",
           "System.Text.Encoding.CodePages": "7.0.0",
-          "WTelegramClient": "3.5.6"
+          "WTelegramClient": "3.6.1"
         },
         "runtime": {
           "DataVortex.dll": {}
@@ -900,11 +900,11 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
-      "WTelegramClient/3.5.6": {
+      "WTelegramClient/3.6.1": {
         "runtime": {
           "lib/net5.0/WTelegramClient.dll": {
-            "assemblyVersion": "3.5.6.0",
-            "fileVersion": "3.5.6.0"
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -1596,12 +1596,12 @@
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
     },
-    "WTelegramClient/3.5.6": {
+    "WTelegramClient/3.6.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-qZmCcdTvc89V9U4FkF2lMDiDcmNnlrqo88EoM34SK4BJT7l2Uo5+fB5c/2lXBGNk9x2ZvlVgo8a/HdodwcMH7w==",
-      "path": "wtelegramclient/3.5.6",
-      "hashPath": "wtelegramclient.3.5.6.nupkg.sha512"
+      "sha512": "sha512-ItsCMcD1I87ZRyBDlUbedqzyBAxVuurPtYMZ8ZBx+aLJ+H1UeVLkxkV37M99dYN1TCJQRoYdJ1MR+IZmRVFRgA==",
+      "path": "wtelegramclient/3.6.1",
+      "hashPath": "wtelegramclient.3.6.1.nupkg.sha512"
     },
     "ZstdSharp.Port/0.7.2": {
       "type": "package",

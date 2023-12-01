@@ -5,6 +5,7 @@ public class Telegram
 {
     public static async Task TelegramDownload(string downloadPath)
     {
+
         Client client = null;
         try
         {
@@ -59,7 +60,6 @@ public class Telegram
                                         {
                                             var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
                                             var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
-
                                             // Créez un objet InputDocumentFileLocation
                                             var fileLocation = new InputDocumentFileLocation
                                             {

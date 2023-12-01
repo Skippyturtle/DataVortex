@@ -19,12 +19,14 @@ namespace DataVortex
 
     internal class Checker
     {
+
         public static double Remaining1 { get; private set; }
         public static string BirthDate { get; set; }
 
-
         public static void HandleAccount(string keyword, (string url, string username, string password, string app) account)
         {
+
+
             if (IsAccountVerified(account.username))
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
@@ -68,8 +70,32 @@ namespace DataVortex
             }
         }
 
+        public static void RemoveDuplicateLines(string filePath)
+        {
+            try
+            {
+                // Read all lines from the file
+                string[] lines = File.ReadAllLines(filePath);
 
+                // Use a HashSet to store unique lines
+                HashSet<string> uniqueLines = new HashSet<string>();
 
+                // Add each line to the HashSet, removing duplicates
+                foreach (string line in lines)
+                {
+                    uniqueLines.Add(line);
+                }
+
+                // Write the unique lines back to the file
+                File.WriteAllLines(filePath, uniqueLines);
+
+                Console.WriteLine("Duplicates removed successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
 
 
         public static async Task CheckPassCultureAsync(string username, string password)

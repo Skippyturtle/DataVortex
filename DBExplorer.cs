@@ -27,8 +27,6 @@ namespace DBExplorer
                 return;
             }
 
-            List<string> processedArchives = LoadProcessedArchives();
-
             foreach (string archivePath in archives)
             {
                 string archiveName = Path.GetFileName(archivePath); // Obtenez le nom de l'archive
@@ -99,22 +97,6 @@ namespace DBExplorer
                                 archiveName, // Utilisez le nom de l'archive
                                 DataVortex.Checker.BirthDate,
                                 DataVortex.Checker.Remaining1
-                            ).Wait();
-                        }
-                        else if (keyword == "ionos")
-                        {
-                            DataVortex.keywords.UrlChecker.Keywords.SendToDiscordWebhookIonos(
-                                results[keyword],
-                                DataVortex.keywords.UrlChecker.Keywords.List[keyword],
-                                archiveName // Utilisez le nom de l'archive
-                            ).Wait();
-                        }
-                        else if (keyword == "mcdo")
-                        {
-                            DataVortex.keywords.UrlChecker.Keywords.SendToDiscordWebhookMcdo(
-                                results[keyword],
-                                DataVortex.keywords.UrlChecker.Keywords.List[keyword],
-                                archiveName // Utilisez le nom de l'archive
                             ).Wait();
                         }
                     }
@@ -228,14 +210,5 @@ namespace DBExplorer
             return results;
         }
 
-
-        public static List<string> LoadProcessedArchives()
-        {
-            if (File.Exists("processed_archives.txt"))
-            {
-                return File.ReadAllLines("processed_archives.txt").ToList();
-            }
-            return new List<string>();
-        }
     }
 }
