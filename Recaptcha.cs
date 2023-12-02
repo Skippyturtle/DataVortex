@@ -30,11 +30,11 @@ namespace TwoCaptcha.Examples
             {
                 solver.Solve(captcha).Wait();
                 _captchaCode = captcha.Code; // Stocker la valeur du code
-                Console.WriteLine("Captcha résolu : " + _captchaCode);
+                Telegram.LogMessage("Captcha résolu : " + _captchaCode);
             }
             catch (AggregateException e)
             {
-                Console.WriteLine("Une erreur s'est produite : " + e.InnerExceptions.First().Message);
+                Telegram.LogMessage("Une erreur s'est produite : " + e.InnerExceptions.First().Message);
             }
         }
 

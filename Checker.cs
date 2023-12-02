@@ -108,7 +108,6 @@ namespace DataVortex
             }
 
             Telegram.LogMessage("Captcha en cours");
-            Telegram.LogMessage(" ");
             ReCaptchaV2Example.SolveCaptcha();
             string captchaCode = ReCaptchaV2Example.CaptchaCode;
             var url = "https://backend.passculture.app/native/v1/signin";

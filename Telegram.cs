@@ -1,4 +1,5 @@
 ﻿using DataVortex;
+using Discord;
 using TL;
 using WTelegram;
 
@@ -6,7 +7,6 @@ public class Telegram
 {
     public static async Task TelegramDownload(string downloadPath)
     {
-
         Client client = null;
         try
         {
@@ -33,6 +33,7 @@ public class Telegram
             // Suivez tous les canaux
             foreach (var channelEntry in channelMap)
             {
+
                 // Gérez les mises à jour en utilisant OnUpdate
                 client.OnUpdate += async (updates) =>
                 {
@@ -43,11 +44,9 @@ public class Telegram
                             var message = newMessage.message as Message;
                             if (message != null && channelMap.Values.Any(channel => message.peer_id.ID == channel.ID))
                             {
-                                Console.Clear();
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 LogMessage($"+++++++++++++ Nouveau message reçu de {channelMap.Values.First(channel => message.peer_id.ID == channel.ID)} +++++++++++++");
                                 Console.ResetColor();
-
 
                                 // Vérifiez si le message contient une pièce jointe et téléchargez-la si nécessaire
                                 if (message.media is MessageMediaDocument documentMedia)
@@ -59,8 +58,10 @@ public class Telegram
 
                                         if (fileExtension == "zip" || fileExtension == "vnd.rar")
                                         {
+                         
                                             var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
                                             var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
+
                                             // Créez un objet InputDocumentFileLocation
                                             var fileLocation = new InputDocumentFileLocation
                                             {
@@ -71,30 +72,24 @@ public class Telegram
                                             };
 
                                             // Définissez le chemin du fichier local où le fichier sera téléchargé
-
-                                            var localFilePath = downloadPath + fileName;
+                                            var localFilePath = Path.Combine(downloadPath, fileName);
                                             Console.WriteLine();
-                                            Console.SetCursorPosition(0, 1);
                                             Console.Write("Fichier compatible : ");
                                             Console.ForegroundColor = ConsoleColor.Blue;
                                             Console.Write(fileName);
                                             Console.ResetColor();
 
-                                            // Commencez à surveiller la vitesse de téléchargement
                                             Network.StartMonitoring(document.size); // Ajouté
 
                                             // Téléchargez le fichier
                                             using (var outputStream = System.IO.File.OpenWrite(localFilePath))
-                                            { 
+                                            {
                                                 await client.DownloadFileAsync(fileLocation, outputStream);
                                             }
 
-                                            Network.StopMonitoring();
-
-                                            //Appelez DBExplorer pour traiter le fichier
-                                            ClearConsole();
-                                            Thread.Sleep(3000);
-                                            DBExplorer.DBExplorer.Run(localFilePath, fileName);
+                                            // Appelez DBExplorer pour traiter le fichier et attendre 3 secondes pour éviter System.IO.IOException
+                                            await Task.Delay(3000);
+                                            DBExplorer.DBExplorer.Run(localFilePath);
                                         }
                                         else
                                         {
@@ -105,16 +100,14 @@ public class Telegram
                                     }
                                     else
                                     {
-                                        Console.ForegroundColor = ConsoleColor.Red;
-                                        Console.WriteLine("Le fichier n'est pas un document et ne sera pas téléchargé.");
-                                        Console.ResetColor();
+                                        LogMessage("Skip");
+                                        DBExplorer.DBExplorer.Startconsole();
                                     }
                                 }
                                 else
                                 {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine("Le fichier n'est pas un document et ne sera pas téléchargé.");
-                                    Console.ResetColor();
+                                    LogMessage("Skip");
+                                    DBExplorer.DBExplorer.Startconsole();
                                 }
                             }
                         }
@@ -124,8 +117,6 @@ public class Telegram
                 Console.ForegroundColor = ConsoleColor.Red;
                 LogMessage("Appuyez sur une touche pour arrêter le programme.");
                 Console.ResetColor();
-
-                Thread.Sleep(3000);
                 DBExplorer.DBExplorer.Startconsole();
 
                 while (!Console.KeyAvailable)
@@ -143,17 +134,13 @@ public class Telegram
                 client.Dispose();
         }
     }
+
     public static void ClearConsole()
     {
-        Console.Clear();  // Attempt to clear the console
-
-        // If the console wasn't cleared (for example, in some IDEs), simulate clearing
         for (int i = 0; i < Console.WindowHeight; i++)
         {
             Console.WriteLine();
         }
-
-        // Set the cursor position to the top-left corner
         Console.SetCursorPosition(0, 0);
     }
     public static void LogMessage(string message)

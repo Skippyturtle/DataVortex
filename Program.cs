@@ -4,6 +4,7 @@ class Program
 {
     static async Task Main()
     {
+        WTelegram.Helpers.Log = (lvl, str) => { /* pas envoyer les logs spamms */ };
         // Définissez un gestionnaire d'exceptions global
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
