@@ -76,12 +76,13 @@ namespace DataVortex
             }
             else
             {
-                DisplayProgressBarNonWindows(percentageDownloaded, totalBytesReceived, totalBytesToDownload, averageBytesPerSecond);
+                DisplayProgressBarNonWindows(percentageDownloaded, totalBytesReceived, totalBytesToDownload, averageBytesPerSecond, estimatedTimeRemaining);
             }
 
             previousTotalBytesReceived = totalBytesReceived;
             previousCheckTime = checkTime;
         }
+
 
         private static void DisplayProgressBarWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond,double estimatedTimeRemaining)
         {
@@ -122,7 +123,7 @@ namespace DataVortex
             Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
         }
 
-        private static void DisplayProgressBarNonWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond)
+        private static void DisplayProgressBarNonWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond, double estimatedTimeRemaining)
         {
             // Progress bar for non-Windows
             int progressBarLength = 20;
