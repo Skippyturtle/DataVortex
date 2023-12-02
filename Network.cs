@@ -130,12 +130,46 @@ namespace DataVortex
 
         private static void DisplayProgressBarNonWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond, double estimatedTimeRemaining)
         {
-            // Progress bar for non-Windows
-            int progressBarLength = 20;
+            int progressBarLength = 20; // Set the desired length for the progress bar
             int progressChars = (int)(percentageDownloaded / 100 * progressBarLength);
 
             Console.SetCursorPosition(0, 13);
-            Console.Write($"Progress: [{new string('#', progressChars)}{new string('-', progressBarLength - progressChars)}] {percentageDownloaded:F2}% ");
+
+            if (estimatedTimeRemaining < 60)
+            {
+                Console.Write($"{estimatedTimeRemaining.ToString("0")} secs ");
+            }
+            else
+            {
+                double minutesRemaining = estimatedTimeRemaining / 60;
+
+                if (minutesRemaining < 2)
+                {
+                    Console.Write($"{minutesRemaining.ToString("0")} min ");
+                }
+                else
+                {
+                    Console.Write($"{minutesRemaining.ToString("0")} mins ");
+                }
+            }
+
+            Console.Write("[");
+
+            for (int i = 0; i < progressBarLength; i++)
+            {
+                if (i < progressChars)
+                {
+                    Console.Write("#"); // Character to represent progress
+                }
+                else
+                {
+                    Console.Write("."); // Character to represent remaining space
+                }
+            }
+
+            Console.Write("] ");
+
+            Console.Write($"{percentageDownloaded.ToString("0.00")}% ");
             Console.Write($" [{totalBytesReceived / (1024.0 * 1024.0):F2}MB/{totalBytesToDownload / (1024.0 * 1024.0):F2}MB] @ {averageBytesPerSecond / (1024.0 * 1024.0):F2}MB/s");
 
             Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
