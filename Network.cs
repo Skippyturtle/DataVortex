@@ -63,11 +63,15 @@ namespace DataVortex
                 lastFiveSeconds.Dequeue();
             }
 
-            long averageBytesPerSecond = (long)lastFiveSeconds.Average();
+            long averageBytesPerSecond = (lastFiveSeconds.Count > 0) ? (long)lastFiveSeconds.Average() : 0;
             double averageKiloBytesPerSecond = averageBytesPerSecond / 1024.0;
 
             double percentageDownloaded = (double)totalBytesReceived / totalBytesToDownload * 100;
-            double estimatedTimeRemaining = (totalBytesToDownload - totalBytesReceived) / averageBytesPerSecond;
+
+            // Check if averageBytesPerSecond is not zero before calculating estimatedTimeRemaining
+            double estimatedTimeRemaining = (averageBytesPerSecond != 0)
+                ? (totalBytesToDownload - totalBytesReceived) / averageBytesPerSecond
+                : double.PositiveInfinity;
 
             // Display the progress bar
             if (IsWindows())
@@ -82,6 +86,7 @@ namespace DataVortex
             previousTotalBytesReceived = totalBytesReceived;
             previousCheckTime = checkTime;
         }
+
 
 
         private static void DisplayProgressBarWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond,double estimatedTimeRemaining)
