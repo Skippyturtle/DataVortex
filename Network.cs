@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Threading;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace DataVortex
 {
@@ -12,7 +12,7 @@ namespace DataVortex
         private static Queue<long> lastFiveSeconds = new Queue<long>(5);
         private static long previousTotalBytesReceived = 0;
         private static DateTime previousCheckTime;
-        public static long totalBytesToDownload = 0; // Ajouté
+        public static long totalBytesToDownload = 0;
         public static long totalBytesReceivedAtStart = 0;
         public static bool stopMonitoring = false;
 
@@ -24,19 +24,21 @@ namespace DataVortex
             totalBytesReceivedAtStart = GetTotalBytesReceived();
             previousTotalBytesReceived = 0;
 
-            // Démarrer une nouvelle tâche pour la surveillance de la progression
-            Task.Run(() =>
+            // Start a new task to monitor the progress
+            Thread monitorThread = new Thread(() =>
             {
                 while (!stopMonitoring)
                 {
                     DisplayNetworkSpeed();
 
-                    // Pause pendant une seconde avant de vérifier à nouveau
+                    // Pause for a second before checking again
                     Thread.Sleep(1000);
                 }
             });
 
-            // Démarrer le téléchargement ici
+            monitorThread.Start();
+
+            // Start the download here
             // ...
         }
 
@@ -44,6 +46,7 @@ namespace DataVortex
         {
             stopMonitoring = true;
         }
+
         public static void DisplayNetworkSpeed()
         {
             long totalBytesReceived = GetTotalBytesReceived() - totalBytesReceivedAtStart;
@@ -66,11 +69,27 @@ namespace DataVortex
             double percentageDownloaded = (double)totalBytesReceived / totalBytesToDownload * 100;
             double estimatedTimeRemaining = (totalBytesToDownload - totalBytesReceived) / averageBytesPerSecond;
 
-            // Progress bar
+            // Display the progress bar
+            if (IsWindows())
+            {
+                DisplayProgressBarWindows(percentageDownloaded, totalBytesReceived, totalBytesToDownload, averageBytesPerSecond, estimatedTimeRemaining);
+            }
+            else
+            {
+                DisplayProgressBarNonWindows(percentageDownloaded, totalBytesReceived, totalBytesToDownload, averageBytesPerSecond);
+            }
+
+            previousTotalBytesReceived = totalBytesReceived;
+            previousCheckTime = checkTime;
+        }
+
+        private static void DisplayProgressBarWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond,double estimatedTimeRemaining)
+        {
+            // Progress bar for Windows
             int progressBarLength = 20; // Set the desired length for the progress bar
             int progressChars = (int)(percentageDownloaded / 100 * progressBarLength);
 
-            Console.SetCursorPosition(0,13);
+            Console.SetCursorPosition(0, 13);
 
             if (estimatedTimeRemaining < 60)
             {
@@ -90,28 +109,36 @@ namespace DataVortex
                 }
             }
 
-
-            // Display the progress bar using System.Console.ProgressBar
             Console.Write("|");
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.Write(new string(' ', progressChars));
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Write(new string(' ', progressBarLength - progressChars));
-            Console.Write("| "); // j'ai ajouté un espace pour que le pourcentage soit pas collé
+            Console.Write("| ");
 
             Console.Write($"{percentageDownloaded.ToString("0.00")}% ");
-            // Display additional information like [26.3MB/93.8MB] @ 5.17MB/s
             Console.Write($" [{totalBytesReceived / (1024.0 * 1024.0):F2}MB/{totalBytesToDownload / (1024.0 * 1024.0):F2}MB] @ {averageBytesPerSecond / (1024.0 * 1024.0):F2}MB/s");
 
-            // Clear the rest of the line in case it's longer than the current text
             Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
-
-            previousTotalBytesReceived = totalBytesReceived;
-            previousCheckTime = checkTime;
         }
 
+        private static void DisplayProgressBarNonWindows(double percentageDownloaded, long totalBytesReceived, long totalBytesToDownload, long averageBytesPerSecond)
+        {
+            // Progress bar for non-Windows
+            int progressBarLength = 20;
+            int progressChars = (int)(percentageDownloaded / 100 * progressBarLength);
 
+            Console.SetCursorPosition(0, 13);
+            Console.Write($"Progress: [{new string('#', progressChars)}{new string('-', progressBarLength - progressChars)}] {percentageDownloaded:F2}% ");
+            Console.Write($" [{totalBytesReceived / (1024.0 * 1024.0):F2}MB/{totalBytesToDownload / (1024.0 * 1024.0):F2}MB] @ {averageBytesPerSecond / (1024.0 * 1024.0):F2}MB/s");
 
+            Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
+        }
+
+        private static bool IsWindows()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        }
 
         private static long GetTotalBytesReceived()
         {
@@ -141,7 +168,7 @@ namespace DataVortex
             }
             else
             {
-                return "Aucune interface réseau par défaut trouvée.";
+                return "No default network interface found.";
             }
         }
     }
