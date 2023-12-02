@@ -9,6 +9,7 @@
       "DataVortex/1.0.0": {
         "dependencies": {
           "2captcha-csharp": "1.3.2",
+          "Aspose.Zip": "23.11.0",
           "Colorful.Console": "1.2.15",
           "Costura.Fody": "5.7.0",
           "Discord.Net.Webhook": "3.13.0",
@@ -31,6 +32,17 @@
           "lib/net7.0/TwoCaptcha.dll": {
             "assemblyVersion": "1.3.2.0",
             "fileVersion": "1.3.2.0"
+          }
+        }
+      },
+      "Aspose.Zip/23.11.0": {
+        "dependencies": {
+          "System.Text.Encoding.CodePages": "8.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Aspose.Zip.dll": {
+            "assemblyVersion": "23.11.0.0",
+            "fileVersion": "23.11.0.0"
           }
         }
       },
@@ -1079,6 +1091,13 @@
       "sha512": "sha512-5FiCLYkJHGpCcBqH5CbDN6cmu4P0xpy8uwp/L7q+fhzi+6qEeqKGAHawvRilRPOidPk1aMDV6O9Zle/oBFch8Q==",
       "path": "2captcha-csharp/1.3.2",
       "hashPath": "2captcha-csharp.1.3.2.nupkg.sha512"
+    },
+    "Aspose.Zip/23.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-41KAe1cHxsSpmevomO15ZAimTnattsXRQ8dp8HsJ1QfeqwB6dGfb45U6ge26P9oQFLyLvakR0YuL1YDVJaD+Ww==",
+      "path": "aspose.zip/23.11.0",
+      "hashPath": "aspose.zip.23.11.0.nupkg.sha512"
     },
     "Colorful.Console/1.2.15": {
       "type": "package",

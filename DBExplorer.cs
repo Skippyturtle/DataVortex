@@ -5,6 +5,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using Ionic.Zip;
 using SharpCompress.Archives;
+using SharpCompress.Archives.Zip;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Common;
 using ColorfulConsole = Colorful.Console;
@@ -194,15 +195,11 @@ namespace DBExplorer
 
         private static void ExtractZipArchive(string filename, string output_path)
         {
-            using (ZipFile zip = ZipFile.Read(filename))
+            using (var archive = ZipArchive.Open(filename))
             {
-                foreach (var entry in zip)
+                foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory && (entry.Key.EndsWith("Passwords.txt") || entry.Key.EndsWith("All Passwords.txt"))))
                 {
-                    if (!entry.IsDirectory && (entry.FileName.EndsWith("Passwords.txt") || entry.FileName.EndsWith("All Passwords.txt")))
-                    {
-                        string outputPath = Path.Combine(output_path, entry.FileName);
-                        entry.Extract(outputPath, ExtractExistingFileAction.OverwriteSilently);
-                    }
+                    entry.WriteToDirectory(output_path, new ExtractionOptions() { Overwrite = true });
                 }
             }
         }
@@ -211,17 +208,9 @@ namespace DBExplorer
         {
             using (var archive = RarArchive.Open(filename))
             {
-                foreach (var entry in archive.Entries)
+                foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory && (entry.Key.EndsWith("Passwords.txt") || entry.Key.EndsWith("All Passwords.txt"))))
                 {
-                    if (!entry.IsDirectory && (entry.Key.EndsWith("Passwords.txt") || entry.Key.EndsWith("All Passwords.txt")))
-                    {
-                        string relativePath = entry.Key;
-                        string outputPath = Path.GetFullPath(Path.Combine(output_path, relativePath));
-                        string outputDirPath = Path.GetDirectoryName(outputPath) ?? Path.Combine(output_path, "default");
-
-                        Directory.CreateDirectory(outputDirPath);
-                        entry.WriteToFile(outputPath, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
-                    }
+                    entry.WriteToDirectory(output_path, new ExtractionOptions() { Overwrite = true });
                 }
             }
         }
