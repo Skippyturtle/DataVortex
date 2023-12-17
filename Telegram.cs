@@ -58,7 +58,7 @@ public class Telegram
 
                                         if (fileExtension == "zip" || fileExtension == "vnd.rar")
                                         {
-                         
+
                                             var fileNameAttribute = document.attributes.OfType<DocumentAttributeFilename>().FirstOrDefault();
                                             var fileName = fileNameAttribute != null ? fileNameAttribute.file_name : "downloaded";
 
@@ -87,6 +87,8 @@ public class Telegram
                                                 await client.DownloadFileAsync(fileLocation, outputStream);
                                             }
 
+                                            Network.StopMonitoring();
+
                                             // Appelez DBExplorer pour traiter le fichier et attendre 3 secondes pour éviter System.IO.IOException
                                             await Task.Delay(3000);
                                             DBExplorer.DBExplorer.Run(localFilePath);
@@ -100,23 +102,22 @@ public class Telegram
                                     }
                                     else
                                     {
-                                        LogMessage("Skip");
-                                        DBExplorer.DBExplorer.Startconsole();
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        LogMessage("Ce message contient un document qui n'est pas une archive.");
+                                        Console.ResetColor();
                                     }
                                 }
                                 else
                                 {
-                                    LogMessage("Skip");
-                                    DBExplorer.DBExplorer.Startconsole();
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    LogMessage("Ce message ne contient pas de document.");
+                                    Console.ResetColor();
                                 }
                             }
                         }
                     }
                 };
 
-                Console.ForegroundColor = ConsoleColor.Red;
-                LogMessage("Appuyez sur une touche pour arrêter le programme.");
-                Console.ResetColor();
                 DBExplorer.DBExplorer.Startconsole();
 
                 while (!Console.KeyAvailable)
@@ -133,15 +134,6 @@ public class Telegram
             if (client != null)
                 client.Dispose();
         }
-    }
-
-    public static void ClearConsole()
-    {
-        for (int i = 0; i < Console.WindowHeight; i++)
-        {
-            Console.WriteLine();
-        }
-        Console.SetCursorPosition(0, 0);
     }
     public static void LogMessage(string message)
     {

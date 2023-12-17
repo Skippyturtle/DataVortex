@@ -122,43 +122,64 @@ namespace DBExplorer
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Contenu de dbdtemp supprimé avec succès.");
+                Console.WriteLine("Suppressions des logs dans 5 secondes...");
+                System.Threading.Thread.Sleep(5000);
                 Console.ResetColor();
+
                 Startconsole();
             }
         }
 
-        public static void Startconsole()
-        {
-            Telegram.ClearConsole();
+        public static async Task Startconsole()
+        { 
+            Console.WriteLine("\u001b[2J\u001b[3J");
+            Console.SetCursorPosition(0, 0);
             PrintBanner();
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine();
             Telegram.LogMessage("Prêt à télécharger la prochaine archive");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Telegram.LogMessage("Appuyez sur une touche pour arrêter le programme.");
+            Console.ResetColor();
+            Console.WriteLine();
         }
+
 
         private static void PrintBanner()
         {
             ColorfulConsole.WriteLine(Figgle.FiggleFonts.Standard.Render("DBExplorer"));
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("V1.8.3");
+            Console.WriteLine("V1.8.5");
             Console.ResetColor();
         }
 
         private static void ExtractArchive(string filename, string output_path)
         {
+            // Vérifie si le fichier est une archive supportée
             if (IsArchiveFile(filename))
             {
+                // Ouvre l'archive à l'aide de la bibliothèque externe
                 using (var archive = ArchiveFactory.Open(filename))
                 {
+                    // Parcourt chaque entrée dans l'archive
                     foreach (var entry in archive.Entries)
                     {
+                        // Vérifie si l'entrée est un fichier et correspond aux critères
                         if (!entry.IsDirectory && (entry.Key.EndsWith("Passwords.txt") || entry.Key.EndsWith("All Passwords.txt")))
                         {
+                            // Obtient le chemin relatif de l'entrée
                             string relativePath = entry.Key;
+
+                            // Compose le chemin complet de sortie en combinant le chemin de sortie spécifié avec le chemin relatif de l'entrée
                             string outputPath = Path.GetFullPath(Path.Combine(output_path, relativePath));
+
+                            // Obtient le chemin du répertoire de sortie
                             string outputDirPath = Path.GetDirectoryName(outputPath) ?? Path.Combine(output_path, "default");
 
+                            // Crée le répertoire de sortie s'il n'existe pas déjà
                             Directory.CreateDirectory(outputDirPath);
+
+                            // Extrait le fichier vers le chemin de sortie avec les options d'extraction spécifiées
                             entry.WriteToFile(outputPath, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
                         }
                     }
@@ -166,11 +187,15 @@ namespace DBExplorer
             }
             else
             {
+                // Affiche un message d'erreur si le format de l'archive n'est pas pris en charge
                 ColorfulConsole.WriteLine("Erreur : format d'archive non pris en charge", System.Drawing.Color.Blue);
                 Console.ResetColor();
+
+                // Supprime le fichier d'archive en cas d'erreur
                 File.Delete(filename);
             }
         }
+
 
         private static bool IsArchiveFile(string filename)
         {
