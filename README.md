@@ -77,7 +77,7 @@ Pour éviter tout problème, assurez-vous que votre compte Telegram est correcte
 
 ### Support
 
-Pour toute question ou problème, veuillez me contacter pour un support technique sur discord `.__.___._._._._`.
+Pour toute question ou problème, veuillez me contacter pour un support technique sur discord `DendiMirrorV2`.
 
 
 N'hésitez pas à me faire savoir si vous avez besoin d'autres modifications ou ajouts !
